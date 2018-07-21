@@ -22,6 +22,7 @@ limitations under the License.
 <link rel="import" href="../paper-item/paper-item.html">
 <link rel="import" href="../paper-ripple/paper-ripple.html">
 <link rel="import" href="../cosmoz-i18next/cosmoz-i18next.html">
+<link rel="import" href="../iron-a11y-keys/iron-a11y-keys.html">
 
 <!--
 `paper-autocomplete-chips` is a multi-selection autocomplete element.
@@ -105,10 +106,28 @@ limitations under the License.
 				<div class="chip"><span>[[ _getChipText(item, textProperty) ]]</span><iron-icon icon="clear" on-click="_clearItemSelection"></iron-icon></div>
 			</template>
 		</div>
-		<paper-autocomplete id="ac" min-length="0" label="[[ label ]]" source="[[ source ]]" value="{{ _selection }}"
-				text-property="[[ textProperty ]]" query-fn="[[ queryFn ]]" min-length="[[ minLength ]]"
-				disable-show-clear text="{{ text }}" no-label-float show-results-on-focus="[[ showResultsOnFocus ]]"
-				focused="{{ focused }}" disabled="[[ disabled ]]" error-message="[[ errorMessage ]]" invalid="[[ _acInvalid ]]">
+		<iron-a11y-keys
+      id="a11yEnter"
+      keys="enter"
+      on-keys-pressed="addToSource">
+    </iron-a11y-keys>
+		<paper-autocomplete
+			id="ac"
+			min-length="0"
+			label="[[ label ]]"
+			source="[[ source ]]"
+			value="{{ _selection }}"
+			text-property="[[ textProperty ]]"
+			query-fn="[[ queryFn ]]"
+			min-length="[[ minLength ]]"
+			disable-show-clear
+			text="{{ text }}"
+			no-label-float
+			show-results-on-focus="[[ showResultsOnFocus ]]"
+			focused="{{ focused }}"
+			disabled="[[ disabled ]]"
+			error-message="[[ errorMessage ]]"
+			invalid="[[ _acInvalid ]]">
 			<slot name="prefix" slot="prefix"></slot>
 			<slot name="suffix" slot="suffix"></slot>
 			<template slot="autocomplete-custom-template">
@@ -200,7 +219,7 @@ limitations under the License.
 					value: function () {
 						var me = this,
 							maxResults = 30,
-							regexpResult = '<b>$1</b>',
+							regexpResult = '$1',
 							getResult = (item, textProp) => {
 								if (typeof item === 'object') {
 									return {
@@ -341,6 +360,11 @@ limitations under the License.
 			behaviors: [
 				Cosmoz.TranslatableBehavior
 			],
+
+			ready () {
+				this.$.a11yEnter.target = this.root.querySelector('#ac');
+			},
+
 			_clearItemSelection(event) {
 				var item = event.model.item,
 					selectedIndex = this.selectedItems.indexOf(item);
@@ -399,6 +423,20 @@ limitations under the License.
 				this.set('_acInvalid', false);
 				this.set('errorMessage', '');
 				return true;
+			},
+
+			addToSource () {
+				console.log('addToSource %o', this.text);
+				const text = this.text;
+				if (text) {
+					for (let i in this.source) {
+						if(this.source[i] === text) {
+							return;
+						}
+					}
+					this.source.push(text);
+					console.log('addToSource %o', this.source);
+				}
 			}
 		});
 	</script>
