@@ -135,7 +135,7 @@ limitations under the License.
 					<div inner-h-t-m-l="[[item.html]]"></div>
 					<paper-ripple></paper-ripple>
 				</paper-item>
-			  </template>
+			</template>
 		</paper-autocomplete>
 	</template>
 
@@ -431,10 +431,17 @@ limitations under the License.
 				if (text) {
 					for (let i in this.source) {
 						if(this.source[i] === text) {
+							// for(let j in this.selectedItems) {
+							// 	if (this.selectedItems[j] === text) {}
+							// }
+							this._selection = text;
+							this.text = null;
 							return;
 						}
 					}
-					this.source.push(text);
+					this.push('source', text);
+					this._selection = text;
+					this.text = null;
 					console.log('addToSource %o', this.source);
 				}
 			}
