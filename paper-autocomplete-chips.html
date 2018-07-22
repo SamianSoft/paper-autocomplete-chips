@@ -63,9 +63,10 @@ limitations under the License.
 				max-width: 90%;
 			}
 			.chip {
-				border-radius: 500px;
+        padding: 3px;
+				border-radius: 50px;
 				background-color: #e0e0e0;
-				margin: 1px 4px 1px 0;
+				margin: 5px 5px 5px 0;
 				white-space: nowrap;
 				overflow: hidden;
 				@apply --layout-horizontal;
@@ -73,8 +74,9 @@ limitations under the License.
 			}
 			.chip > span {
 				color: #424242;
-				margin-left: 10px;
-				font-size: 13px;
+        margin-left: 10px;
+        margin-right: 10px;
+        @apply --paper-font-body1;
 				overflow: hidden;
 				text-overflow: ellipsis;
 			}
