@@ -431,17 +431,11 @@ limitations under the License.
 				console.log('addToSource %o', this.text);
 				const text = this.text;
 				if (text) {
-					for (let i in this.source) {
-						if(this.source[i] === text) {
-							// for(let j in this.selectedItems) {
-							// 	if (this.selectedItems[j] === text) {}
-							// }
-							this._selection = text;
-							this.text = null;
-							return;
-						}
-					}
-					this.push('source', text);
+          for(let j in this.selectedItems) {
+            if (this.selectedItems[j] === text) {
+              return;
+            }
+          }
 					this._selection = text;
 					this.text = null;
 					console.log('addToSource %o', this.source);
