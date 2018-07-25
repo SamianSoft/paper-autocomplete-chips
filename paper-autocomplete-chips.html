@@ -113,7 +113,7 @@ limitations under the License.
 		</style>
 		<div id="chips">
 			<template is="dom-repeat" items="[[selectedItems]]">
-				<div class="chip"><span>[[ _getChipText(item, textProperty) ]]</span><iron-icon icon="clear" on-click="_clearItemSelection"></iron-icon></div>
+				<div class="chip" disabled="[[readonly]]"><span>[[ _getChipText(item, textProperty) ]]</span><iron-icon icon="clear" on-click="_clearItemSelection"></iron-icon></div>
 			</template>
 		</div>
 		<iron-a11y-keys
@@ -136,13 +136,13 @@ limitations under the License.
 			no-label-float
 			show-results-on-focus="[[showResultsOnFocus]]"
 			focused="{{focused}}"
-			disabled="[[_or(disabled, readonly)]]"
+			disabled="[[disabled]]"
 			error-message="[[errorMessage]]"
 			invalid="[[_acInvalid]]">
 			<slot name="prefix" slot="prefix"></slot>
 			<slot name="suffix" slot="suffix"></slot>
 			<template slot="autocomplete-custom-template">
-				<paper-item id$="[[_getSuggestionId(index)]]" role="option" aria-selected="false" on-tap="_onSelect">
+				<paper-item id$="[[_getSuggestionId(index)]]" disabled="[[readonly]]" role="option" aria-selected="false" on-tap="_onSelect">
 					<div inner-h-t-m-l="[[item.html]]"></div>
 					<paper-ripple></paper-ripple>
 				</paper-item>
