@@ -102,17 +102,9 @@ limitations under the License.
 					@apply --paper-autocomplete-chips-suggestions;
 				};
 			}
-
-      /*paper-autocomplete[readonly] {*/
-        /*--suggestions-wrapper*/
-        /*--paper-autocomplete-suggestions-wrapper: {*/
-          /*display: none;*/
-        /*};*/
-      /*}*/
-
 		</style>
 		<div id="chips" disabled="[[readonly]]">
-			<template is="dom-repeat" items="[[selectedItems]]" disabled="[[readonly]]">
+			<template is="dom-repeat" items="[[selectedItems]]">
 				<div class="chip" disabled="[[readonly]]"><span>[[ _getChipText(item, textProperty) ]]</span><iron-icon icon="clear" on-click="_clearItemSelection"></iron-icon></div>
 			</template>
 		</div>
@@ -123,10 +115,10 @@ limitations under the License.
     </iron-a11y-keys>
 		<paper-autocomplete
 			id="ac"
-      readonly$="[[readonly]]"
+      readonly="[[readonly]]"
 			min-length="0"
 			label="[[label]]"
-			source="[[source]]"
+			source="[[_checkEditView(source, readonly)]]"
 			value="{{_selection}}"
 			text-property="[[textProperty]]"
 			query-fn="[[queryFn]]"
@@ -140,9 +132,9 @@ limitations under the License.
 			disabled="[[disabled]]"
 			error-message="[[errorMessage]]"
 			invalid="[[_acInvalid]]">
-			<slot name="prefix" slot="prefix" disabled="[[readonly]]"></slot>
-			<slot name="suffix" slot="suffix" disabled="[[readonly]]"></slot>
-			<template slot="autocomplete-custom-template" disabled="[[readonly]]">
+			<slot name="prefix" slot="prefix"></slot>
+			<slot name="suffix" slot="suffix"></slot>
+			<template slot="autocomplete-custom-template">
 				<paper-item id$="[[_getSuggestionId(index)]]" disabled="[[readonly]]" role="option" aria-selected="false" on-tap="_onSelect">
 					<div inner-h-t-m-l="[[item.html]]"></div>
 					<paper-ripple></paper-ripple>
@@ -393,6 +385,9 @@ limitations under the License.
 			},
 
 			_clearItemSelection(event) {
+			  if (this.readonly) {
+			    return;
+        }
 				var item = event.model.item,
 					selectedIndex = this.selectedItems.indexOf(item);
 
@@ -468,9 +463,19 @@ limitations under the License.
 				}
 			},
 
+      _checkEditView() {
+			  console.log('_checkEditView', this.readonly);
+        if (this.readonly) {
+          return null;
+        }
+        else {
+          return this.source;
+        }
+      },
+
       _or (a, b, c) {
         return Boolean(a || b || c);
-      }
+      },
 
     });
 	</script>
