@@ -111,8 +111,8 @@ limitations under the License.
       /*}*/
 
 		</style>
-		<div id="chips">
-			<template is="dom-repeat" items="[[selectedItems]]">
+		<div id="chips" disabled="[[readonly]]">
+			<template is="dom-repeat" items="[[selectedItems]]" disabled="[[readonly]]">
 				<div class="chip" disabled="[[readonly]]"><span>[[ _getChipText(item, textProperty) ]]</span><iron-icon icon="clear" on-click="_clearItemSelection"></iron-icon></div>
 			</template>
 		</div>
@@ -133,15 +133,16 @@ limitations under the License.
 			min-length="[[minLength]]"
 			disable-show-clear
 			text="{{text}}"
-			no-label-float
+			no-label-float="[[noLabelFloat]]"
+      always-float-label="[[alwaysFloatLabel]]"
 			show-results-on-focus="[[showResultsOnFocus]]"
 			focused="{{focused}}"
 			disabled="[[disabled]]"
 			error-message="[[errorMessage]]"
 			invalid="[[_acInvalid]]">
-			<slot name="prefix" slot="prefix"></slot>
-			<slot name="suffix" slot="suffix"></slot>
-			<template slot="autocomplete-custom-template">
+			<slot name="prefix" slot="prefix" disabled="[[readonly]]"></slot>
+			<slot name="suffix" slot="suffix" disabled="[[readonly]]"></slot>
+			<template slot="autocomplete-custom-template" disabled="[[readonly]]">
 				<paper-item id$="[[_getSuggestionId(index)]]" disabled="[[readonly]]" role="option" aria-selected="false" on-tap="_onSelect">
 					<div inner-h-t-m-l="[[item.html]]"></div>
 					<paper-ripple></paper-ripple>
@@ -363,7 +364,7 @@ limitations under the License.
          * readonly `<paper-autocomplete>`
          */
         readonly: {
-        type: Boolean,
+          type: Boolean,
         },
 
 				/**
@@ -372,9 +373,17 @@ limitations under the License.
 				_selection: {
 					type: Object,
 					observer: '_selectionChanged'
-				}
+				},
 
+        noLabelFloat: {
+				  type: Boolean,
+        },
+
+        alwaysFloatLabel: {
+				  type: Boolean,
+        },
 			},
+
 			behaviors: [
 				Cosmoz.TranslatableBehavior
 			],
