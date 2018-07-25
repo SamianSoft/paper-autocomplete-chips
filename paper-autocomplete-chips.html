@@ -104,7 +104,7 @@ limitations under the License.
 			}
 		</style>
 		<div id="chips">
-			<template is="dom-repeat" items="[[ selectedItems ]]">
+			<template is="dom-repeat" items="[[selectedItems]]">
 				<div class="chip"><span>[[ _getChipText(item, textProperty) ]]</span><iron-icon icon="clear" on-click="_clearItemSelection"></iron-icon></div>
 			</template>
 		</div>
@@ -116,20 +116,20 @@ limitations under the License.
 		<paper-autocomplete
 			id="ac"
 			min-length="0"
-			label="[[ label ]]"
-			source="[[ source ]]"
-			value="{{ _selection }}"
-			text-property="[[ textProperty ]]"
-			query-fn="[[ queryFn ]]"
-			min-length="[[ minLength ]]"
+			label="[[label]]"
+			source="[[source]]"
+			value="{{_selection}}"
+			text-property="[[textProperty]]"
+			query-fn="[[queryFn]]"
+			min-length="[[minLength]]"
 			disable-show-clear
-			text="{{ text }}"
+			text="{{text}}"
 			no-label-float
-			show-results-on-focus="[[ showResultsOnFocus ]]"
-			focused="{{ focused }}"
-			disabled="[[ disabled ]]"
-			error-message="[[ errorMessage ]]"
-			invalid="[[ _acInvalid ]]">
+			show-results-on-focus="[[showResultsOnFocus]]"
+			focused="{{focused}}"
+			disabled="[[disabled]]"
+			error-message="[[errorMessage]]"
+			invalid="[[_acInvalid]]">
 			<slot name="prefix" slot="prefix"></slot>
 			<slot name="suffix" slot="suffix"></slot>
 			<template slot="autocomplete-custom-template">
@@ -428,9 +428,9 @@ limitations under the License.
 			},
 
 			addToSource () {
-				console.log('addToSource %o', this.text);
 				const text = this.text;
 				if (text) {
+				console.log('addToSource %o', this.text);
           for(let j in this.selectedItems) {
             if (this.selectedItems[j] === text) {
               return;
