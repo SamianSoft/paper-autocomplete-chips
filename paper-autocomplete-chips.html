@@ -102,6 +102,10 @@ limitations under the License.
 					@apply --paper-autocomplete-chips-suggestions;
 				};
 			}
+
+      .chip[disabled] iron-icon {
+        cursor: default;
+      }
 		</style>
 		<div id="chips" disabled="[[readonly]]">
 			<template is="dom-repeat" items="[[selectedItems]]">
@@ -212,7 +216,8 @@ limitations under the License.
 				 * notifications after user types.
     		     */
 				showResultsOnFocus: {
-					type: Boolean
+					type: Boolean,
+          value: true,
 				},
 
 				/**
