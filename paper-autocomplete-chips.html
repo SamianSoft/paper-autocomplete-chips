@@ -136,7 +136,7 @@ limitations under the License.
 			no-label-float
 			show-results-on-focus="[[showResultsOnFocus]]"
 			focused="{{focused}}"
-			disabled="[[disabled]]"
+			disabled="[[_or(disabled, readonly)]]"
 			error-message="[[errorMessage]]"
 			invalid="[[_acInvalid]]">
 			<slot name="prefix" slot="prefix"></slot>
@@ -457,7 +457,12 @@ limitations under the License.
 					this._selection = text;
 					this.text = null;
 				}
-			}
-		});
+			},
+
+      _or (a, b, c) {
+        return Boolean(a || b || c);
+      }
+
+    });
 	</script>
 </dom-module>
