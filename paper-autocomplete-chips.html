@@ -102,8 +102,16 @@ limitations under the License.
 					@apply --paper-autocomplete-chips-suggestions;
 				};
 			}
+
+      /*paper-autocomplete[readonly] {*/
+        /*--suggestions-wrapper*/
+        /*--paper-autocomplete-suggestions-wrapper: {*/
+          /*display: none;*/
+        /*};*/
+      /*}*/
+
 		</style>
-		<div id="chips">
+		<div id="chips" >
 			<template is="dom-repeat" items="[[ selectedItems ]]">
 				<div class="chip"><span>[[ _getChipText(item, textProperty) ]]</span><iron-icon icon="clear" on-click="_clearItemSelection"></iron-icon></div>
 			</template>
@@ -111,10 +119,11 @@ limitations under the License.
 		<iron-a11y-keys
       id="a11yEnter"
       keys="enter"
-      on-keys-pressed="addToSource">
+      on-keys-pressed="addTag">
     </iron-a11y-keys>
 		<paper-autocomplete
 			id="ac"
+      readonly$="[[readonly]]"
 			min-length="0"
 			label="[[ label ]]"
 			source="[[ source ]]"
@@ -350,6 +359,13 @@ limitations under the License.
 					type: Boolean
 				},
 
+        /**
+         * readonly `<paper-autocomplete>`
+         */
+        readonly: {
+          type: Boolean,
+        },
+
 				/**
 				 * `<paper-autocomplete>` `value` receiever
 				 */
@@ -387,6 +403,7 @@ limitations under the License.
 			},
 
 			_selectionChanged(newSelection) {
+
 				if (newSelection === null) {
 					return;
 				}
@@ -427,18 +444,19 @@ limitations under the License.
 				return true;
 			},
 
-			addToSource () {
-				console.log('addToSource %o', this.text);
+      addTag () {
+//				console.log('addTag %o', this.text);
 				const text = this.text;
 				if (text) {
           for(let j in this.selectedItems) {
             if (this.selectedItems[j] === text) {
+              this.set('errorMessage', 'تگ مورد نظر انتخاب شده است!');
               return;
             }
           }
 					this._selection = text;
 					this.text = null;
-					console.log('addToSource %o', this.source);
+//					console.log('addTag %o', this.source);
 				}
 			}
 		});
