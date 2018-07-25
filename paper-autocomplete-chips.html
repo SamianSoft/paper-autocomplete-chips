@@ -363,7 +363,7 @@ limitations under the License.
          * readonly `<paper-autocomplete>`
          */
         readonly: {
-          type: Boolean,
+        type: Boolean,
         },
 
 				/**
@@ -379,7 +379,7 @@ limitations under the License.
 				Cosmoz.TranslatableBehavior
 			],
 
-			ready () {
+			ready() {
 				this.$.a11yEnter.target = this.root.querySelector('#ac');
 			},
 
@@ -444,8 +444,7 @@ limitations under the License.
 				return true;
 			},
 
-      addTag () {
-//				console.log('addTag %o', this.text);
+      addTag() {
 				const text = this.text;
 				if (text) {
           for(let j in this.selectedItems) {
@@ -456,7 +455,6 @@ limitations under the License.
           }
 					this._selection = text;
 					this.text = null;
-//					console.log('addTag %o', this.source);
 				}
 			}
 		});
