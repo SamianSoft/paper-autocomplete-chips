@@ -117,9 +117,14 @@ limitations under the License.
     </style>
     <div class="label">[[label]]</div>
 		<div id="chips" disabled="[[readonly]]">
-			<template is="dom-repeat" items="[[selectedItems]]">
-				<div class="chip" disabled="[[readonly]]"><span>[[ _getChipText(item, textProperty) ]]</span><iron-icon icon="clear" on-click="_clearItemSelection"></iron-icon></div>
-			</template>
+      <template is="dom-repeat" items="[[selectedItems]]">
+        <div class="chip" disabled="[[readonly]]">
+          <span>[[ _getChipText(item, textProperty) ]]</span>
+          <template is="dom-if" if="[[!readonly]]">
+            <iron-icon icon="clear" on-click="_clearItemSelection"></iron-icon>
+          </template>
+        </div>
+      </template>
 		</div>
 		<iron-a11y-keys
       id="a11yEnter"
@@ -409,9 +414,6 @@ limitations under the License.
 			},
 
 			_clearItemSelection(event) {
-			  if (this.readonly) {
-			    return;
-        }
 				var item = event.model.item,
 					selectedIndex = this.selectedItems.indexOf(item);
 
