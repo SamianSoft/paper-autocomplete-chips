@@ -106,7 +106,16 @@ limitations under the License.
       .chip[disabled] iron-icon {
         cursor: default;
       }
-		</style>
+
+      .label {
+        margin-top: 0.5em;
+      }
+
+      [hidden] {
+        display: none;
+      }
+    </style>
+    <div class="label">[[label]]</div>
 		<div id="chips" disabled="[[readonly]]">
 			<template is="dom-repeat" items="[[selectedItems]]">
 				<div class="chip" disabled="[[readonly]]"><span>[[ _getChipText(item, textProperty) ]]</span><iron-icon icon="clear" on-click="_clearItemSelection"></iron-icon></div>
@@ -117,11 +126,12 @@ limitations under the License.
       keys="enter"
       on-keys-pressed="addTag">
     </iron-a11y-keys>
-		<paper-autocomplete
-			id="ac"
+
+    <paper-autocomplete
+      id="ac"
+      hidden$="[[viewMode]]"
       readonly="[[readonly]]"
 			min-length="0"
-			label="[[label]]"
 			source="[[_checkEditView(source, readonly)]]"
 			value="{{_selection}}"
 			text-property="[[textProperty]]"
@@ -135,7 +145,8 @@ limitations under the License.
 			focused="{{focused}}"
 			disabled="[[disabled]]"
 			error-message="[[errorMessage]]"
-			invalid="[[_acInvalid]]">
+      invalid="[[_acInvalid]]"
+      placeholder="[[placeholder]]">
 			<slot name="prefix" slot="prefix"></slot>
 			<slot name="suffix" slot="suffix"></slot>
 			<template slot="autocomplete-custom-template">
@@ -379,6 +390,14 @@ limitations under the License.
         alwaysFloatLabel: {
 				  type: Boolean,
         },
+
+        placeholder: {
+          type: String,
+        },
+
+        viewMode: {
+          type: Boolean,
+        }
 			},
 
 			behaviors: [
