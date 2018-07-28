@@ -22,6 +22,7 @@ limitations under the License.
 <link rel="import" href="../paper-item/paper-item.html">
 <link rel="import" href="../paper-ripple/paper-ripple.html">
 <link rel="import" href="../cosmoz-i18next/cosmoz-i18next.html">
+<link rel="import" href="../iron-a11y-keys/iron-a11y-keys.html">
 
 <!--
 `paper-autocomplete-chips` is a multi-selection autocomplete element.
@@ -62,9 +63,10 @@ limitations under the License.
 				max-width: 90%;
 			}
 			.chip {
-				border-radius: 500px;
+        padding: 3px;
+				border-radius: 50px;
 				background-color: #e0e0e0;
-				margin: 1px 4px 1px 0;
+				margin: 5px 0 5px 5px;
 				white-space: nowrap;
 				overflow: hidden;
 				@apply --layout-horizontal;
@@ -72,8 +74,9 @@ limitations under the License.
 			}
 			.chip > span {
 				color: #424242;
-				margin-left: 10px;
-				font-size: 13px;
+        margin-left: 10px;
+        margin-right: 10px;
+        @apply --paper-font-body1;
 				overflow: hidden;
 				text-overflow: ellipsis;
 			}
@@ -99,24 +102,64 @@ limitations under the License.
 					@apply --paper-autocomplete-chips-suggestions;
 				};
 			}
-		</style>
-		<div id="chips">
-			<template is="dom-repeat" items="[[ selectedItems ]]">
-				<div class="chip"><span>[[ _getChipText(item, textProperty) ]]</span><iron-icon icon="clear" on-click="_clearItemSelection"></iron-icon></div>
-			</template>
+
+      .chip[disabled] iron-icon {
+        cursor: default;
+      }
+
+      .label {
+        margin-top: 0.5em;
+      }
+
+      [hidden] {
+        display: none;
+      }
+    </style>
+    <div class="label">[[label]]</div>
+		<div id="chips" disabled="[[readonly]]">
+      <template is="dom-repeat" items="[[selectedItems]]">
+        <div class="chip" disabled="[[readonly]]">
+          <span>[[ _getChipText(item, textProperty) ]]</span>
+          <template is="dom-if" if="[[!readonly]]">
+            <iron-icon icon="clear" on-click="_clearItemSelection"></iron-icon>
+          </template>
+        </div>
+      </template>
 		</div>
-		<paper-autocomplete id="ac" min-length="0" label="[[ label ]]" source="[[ source ]]" value="{{ _selection }}"
-				text-property="[[ textProperty ]]" query-fn="[[ queryFn ]]" min-length="[[ minLength ]]"
-				disable-show-clear text="{{ text }}" no-label-float show-results-on-focus="[[ showResultsOnFocus ]]"
-				focused="{{ focused }}" disabled="[[ disabled ]]" error-message="[[ errorMessage ]]" invalid="[[ _acInvalid ]]">
+		<iron-a11y-keys
+      id="a11yEnter"
+      keys="enter"
+      on-keys-pressed="addTag">
+    </iron-a11y-keys>
+
+    <paper-autocomplete
+      id="ac"
+      hidden$="[[viewMode]]"
+      readonly="[[readonly]]"
+			min-length="0"
+			source="[[_checkEditView(source, readonly)]]"
+			value="{{_selection}}"
+			text-property="[[textProperty]]"
+			query-fn="[[queryFn]]"
+			min-length="[[minLength]]"
+			disable-show-clear
+			text="{{text}}"
+			no-label-float="[[noLabelFloat]]"
+      always-float-label="[[alwaysFloatLabel]]"
+			show-results-on-focus="[[showResultsOnFocus]]"
+			focused="{{focused}}"
+			disabled="[[disabled]]"
+			error-message="[[errorMessage]]"
+      invalid="[[_acInvalid]]"
+      placeholder="[[placeholder]]">
 			<slot name="prefix" slot="prefix"></slot>
 			<slot name="suffix" slot="suffix"></slot>
 			<template slot="autocomplete-custom-template">
-				<paper-item id$="[[_getSuggestionId(index)]]" role="option" aria-selected="false" on-tap="_onSelect">
+				<paper-item id$="[[_getSuggestionId(index)]]" disabled="[[readonly]]" role="option" aria-selected="false" on-tap="_onSelect">
 					<div inner-h-t-m-l="[[item.html]]"></div>
 					<paper-ripple></paper-ripple>
 				</paper-item>
-			  </template>
+			</template>
 		</paper-autocomplete>
 	</template>
 
@@ -189,7 +232,8 @@ limitations under the License.
 				 * notifications after user types.
     		     */
 				showResultsOnFocus: {
-					type: Boolean
+					type: Boolean,
+          value: true,
 				},
 
 				/**
@@ -200,7 +244,7 @@ limitations under the License.
 					value: function () {
 						var me = this,
 							maxResults = 30,
-							regexpResult = '<b>$1</b>',
+							regexpResult = '$1',
 							getResult = (item, textProp) => {
 								if (typeof item === 'object') {
 									return {
@@ -325,9 +369,18 @@ limitations under the License.
 				/**
 				 * disables `<paper-autocomplete>`
 				 */
-				disabled: {
-					type: Boolean
-				},
+        disabled: {
+          type: Boolean,
+          value: false,
+        },
+
+        /**
+         * readonly `<paper-autocomplete>`
+         */
+        readonly: {
+          type: Boolean,
+          value: false,
+        },
 
 				/**
 				 * `<paper-autocomplete>` `value` receiever
@@ -335,12 +388,33 @@ limitations under the License.
 				_selection: {
 					type: Object,
 					observer: '_selectionChanged'
-				}
+				},
 
+        noLabelFloat: {
+				  type: Boolean,
+        },
+
+        alwaysFloatLabel: {
+				  type: Boolean,
+        },
+
+        placeholder: {
+          type: String,
+        },
+
+        viewMode: {
+          type: Boolean,
+        }
 			},
+
 			behaviors: [
 				Cosmoz.TranslatableBehavior
 			],
+
+			ready () {
+				this.$.a11yEnter.target = this.root.querySelector('#ac');
+			},
+
 			_clearItemSelection(event) {
 				var item = event.model.item,
 					selectedIndex = this.selectedItems.indexOf(item);
@@ -361,6 +435,7 @@ limitations under the License.
 			},
 
 			_selectionChanged(newSelection) {
+
 				if (newSelection === null) {
 					return;
 				}
@@ -399,7 +474,37 @@ limitations under the License.
 				this.set('_acInvalid', false);
 				this.set('errorMessage', '');
 				return true;
-			}
-		});
+			},
+
+      addTag() {
+				const text = this.text;
+				if (text) {
+				console.log('addToSource %o', this.text);
+          for(let j in this.selectedItems) {
+            if (this.selectedItems[j] === text) {
+              this.set('errorMessage', 'تگ مورد نظر انتخاب شده است!');
+              return;
+            }
+          }
+					this._selection = text;
+					this.text = null;
+				}
+			},
+
+      _checkEditView() {
+			  console.log('_checkEditView', this.readonly);
+        if (this.readonly) {
+          return null;
+        }
+        else {
+          return this.source;
+        }
+      },
+
+      _or (a, b, c) {
+        return Boolean(a || b || c);
+      },
+
+    });
 	</script>
 </dom-module>
