@@ -121,10 +121,10 @@ limitations under the License.
 				<div class="chip" disabled="[[readonly]]"><span>[[ _getChipText(item, textProperty) ]]</span><iron-icon icon="clear" on-click="_clearItemSelection"></iron-icon></div>
 			</template>
 		</div>
-		<iron-a11y-keys
-      id="a11yEnter"
-      keys="enter"
-      on-keys-pressed="addTag">
+    <iron-a11y-keys
+      id="a11yCheck"
+      keys="up down enter"
+      on-keys-pressed="checkSubmitKey">
     </iron-a11y-keys>
 
     <paper-autocomplete
@@ -397,6 +397,15 @@ limitations under the License.
 
         viewMode: {
           type: Boolean,
+        },
+
+        value: {
+          type: String,
+        },
+
+        keyDownUp: {
+          type: Boolean,
+          value: false,
         }
 			},
 
@@ -405,7 +414,7 @@ limitations under the License.
 			],
 
 			ready () {
-				this.$.a11yEnter.target = this.root.querySelector('#ac');
+				this.$.a11yCheck.target = this.root.querySelector('#ac');
 			},
 
 			_clearItemSelection(event) {
@@ -431,7 +440,7 @@ limitations under the License.
 			},
 
 			_selectionChanged(newSelection) {
-
+        console.log('_selectionChanged %o', newSelection);
 				if (newSelection === null) {
 					return;
 				}
@@ -472,10 +481,24 @@ limitations under the License.
 				return true;
 			},
 
+      // check if the suggestion is selected or not
+      checkSubmitKey (event) {
+        const key = event.detail.key;
+        if (key === 'enter') {
+          if (!this.keyDownUp) {
+            this.addTag();
+          }
+          this.keyDownUp = false;
+        }
+        else {
+          this.keyDownUp = true;
+        }
+      },
+
       addTag() {
 				const text = this.text;
 				if (text) {
-				console.log('addToSource %o', this.text);
+				  console.log('addToSource %o', this.text);
           for(let j in this.selectedItems) {
             if (this.selectedItems[j] === text) {
               this.set('errorMessage', 'تگ مورد نظر انتخاب شده است!');
@@ -484,6 +507,7 @@ limitations under the License.
           }
 					this._selection = text;
 					this.text = null;
+          this.keyDownUp = false;
 				}
 			},
 
