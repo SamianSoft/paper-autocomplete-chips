@@ -109,13 +109,15 @@ limitations under the License.
 
       .label {
         margin-top: 0.5em;
+        @apply --paper-font-body1;
+        color: rgba(0, 0, 0, 54%);
       }
 
       [hidden] {
         display: none;
       }
     </style>
-    <div class="label">[[label]]</div>
+    <label class="label">[[label]]</label>
 		<div id="chips" disabled="[[readonly]]">
       <template is="dom-repeat" items="[[selectedItems]]">
         <div class="chip" disabled="[[readonly]]">
